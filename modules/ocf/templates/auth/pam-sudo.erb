@@ -1,0 +1,11 @@
+# use /root principal to sudo
+auth requisite pam_krb5.so minimum_uid=1000 alt_auth_map=%s/root only_alt_auth no_ccache
+auth sufficient pam_yubico.so <%= scope.function_file(['/opt/puppet/shares/private/yubico-api-keys']) %> authfile=/etc/otp/yubikeys
+auth required pam_google_authenticator.so secret=/etc/otp/google-authenticator/${USER}
+account required pam_permit.so
+
+# sensible defaults including logging
+@include common-session-noninteractive
+
+# reset user limits
+session required pam_limits.so
